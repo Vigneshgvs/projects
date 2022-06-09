@@ -15,7 +15,7 @@ class StateExpl extends Component {
         stateVarC : {
           name: "Vignesh",
           age: 28,
-          email: ""
+          email: "vig@gmail.com"
         }
     }
   }
@@ -98,8 +98,8 @@ class StateExpl extends Component {
       stateVarB: "avacado"
       },
       () => {
-        console.log(`
-        State Variable inside callback stateVarB: ${this.state.stateVarB}
+        console.log(` callback 
+        State Variable stateVarB: ${this.state.stateVarB}
         `);
       }
       );
@@ -119,7 +119,62 @@ class StateExpl extends Component {
 
     //changing a single item in json object
     //check whether there exists other items in same json object after that change
+    //expl: https://learn.co/lessons/react-updating-state
+    // this.setState(
+    //     {
+    //         stateVarC: {
+    //             age: 20,
+    //         },
+    //     },
+    //     () => {
+    //         console.log(` callback 
+    //             stateVarC name:${this.state.stateVarC.name} age:${this.state.stateVarC.age} email:${this.state.stateVarC.email}
+    //         `);
+    //     }
+    // )
+    //output: stateVarC name:undefined age:20 email:undefined
+    //above lines will definitely remove name/email from stateVarC.
+    //to retain other items of it: 1. Object.assign() 
+    //Object.assign(target, ...sources)
+    // this.setState(
+    //     {
+    //         stateVarC: Object.assign(
+    //             {
 
+    //             },
+    //             this.state.stateVarC,
+    //             {
+    //                 age: 20,
+    //             }
+    //         ),
+    //     },
+    //     () => {
+    //         console.log(`  callback 
+    //             stateVarC name:${this.state.stateVarC.name} age:${this.state.stateVarC.age} email:${this.state.stateVarC.email}
+    //         `);
+    //     }
+    // )
+    //output: stateVarC name:Vignesh age:20 email:vig@gmail.com
+    //or 2. spread operator in JS (...)
+    this.setState(
+        {
+            stateVarC: {
+                ...this.state.stateVarC,
+                age: 20,
+            },
+        },
+        () => {
+            console.log(`  callback 
+                stateVarC name:${this.state.stateVarC.name} age:${this.state.stateVarC.age} email:${this.state.stateVarC.email}
+            `);
+        }
+    )
+    //output: stateVarC name:Vignesh age:20 email:vig@gmail.com
+    //below is a tester log, not callback log.
+    //after all tester logs get printed, only later callback logs will print........ both in their respective sequence
+    console.log(`
+    stateVarC name:${this.state.stateVarC.name} age:${this.state.stateVarC.age} email:${this.state.stateVarC.email}
+    `);
   }
 
   increment() {
