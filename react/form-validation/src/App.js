@@ -11,12 +11,24 @@ class App extends Component {
     };
   }
 
-    render() {
+  //onChange(newValue) {      wrong sytax - leads to - Uncaught TypeError: this.setState is not a function
+  onChange = (newValue) => {
+       this.setState(
+        { messageText: newValue },
+        () => {
+          console.log(` callback 
+          State Variable messageText: ${this.state.messageText}
+          `);
+        }
+        );      
+  }
+
+  render() {
         return (<div>
-            <Form messageText = { this.state.messageText } ></Form>
+            <Form messageText = { this.state.messageText } onValueChange={this.onChange}></Form>
             <Message messageText = { this.state.messageText } />  
         </div>);
-    }
+  }
 }
 
 export default App;

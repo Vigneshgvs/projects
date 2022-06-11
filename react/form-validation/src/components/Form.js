@@ -1,15 +1,9 @@
 import React, {Component} from 'react';
 
-// const emailRegex = RegExp(/^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/)
-// const nameRegex = RegExp(/([A-Z][a-z])\w+/)
-// const urlRegex = RegExp(/[(http(s)?)://(www.)?a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/)
-// // Not the correct implementation yet
-// const phoneRegex = RegExp(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/)
-const emailRegex = RegExp(/([A-Z][a-z])\w+/)
+const emailRegex = RegExp(/^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/)
 const nameRegex = RegExp(/([A-Z][a-z])\w+/)
-const urlRegex = RegExp(/([A-Z][a-z])\w+/)
-// Not the correct implementation yet
-const phoneRegex = RegExp(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/)
+const urlRegex = RegExp(/[(http(s)?)://(www.)?a-zA-Z0-9@:%._+~#=]{2,256}.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/)
+const phoneRegex = RegExp(/^[2-9][0-9]{9}$/)
 
 //class component
 
@@ -17,61 +11,88 @@ class Form extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            //isEmailValid: false,
-            //isNameValid: false,
-            //isPhoneValid: false,
-            //isUrlValid: false,
+            isEmailValid: false,
+            isNameValid: false,
+            isPhoneValid: false,
+            isUrlValid: false,
             //valid: null
-            isFormValid: true
+            isFormValid: null
         };
     }
 
     validate = () => {
-        var validity;
-        const values = this.state
-        console.log(values)
-        for( const value in values){
-            if(value === false) {
-                validity = false
-            }
+        if (this.state.isEmailValid && this.state.isNameValid && this.state.isPhoneValid && this.state.isUrlValid) {
+            console.log("oranges");
+            this.setState({isFormValid: true}, ()=>{console.log(`after correct validation isFormValid: ${this.state.isFormValid}`)});
+            
+            console.log(`after correct validation isFormValid: ${this.state.isFormValid}`);
         }
-        return validity
     }
 
+    // validate = () => {
+    //     var validity;
+    //     const values = this.state
+    //     console.log(values)
+    //     for( const value in values){
+    //         if(value === false) {
+    //             validity = false
+    //         }
+    //     }
+    //     console.log("apple");
+    //     console.log(`validity is: `, validity);
+    //     return validity
+    // }
+
+    // componentDidMount() {
+    //     setInterval(this.handleVerify, 1000);
+    // }
+
     handleVerify = e => {
-        // e.preventDefault();
-        // if(this.validate){
-        //     this.setState({valid: true})
-        // }
+        e.preventDefault();     //?
+        const values = this.state
+        console.log(values)
+
+        //if(this.validate){
+        this.validate();
+        setTimeout(()=>{},500);       
 
         // --------- setting props value ???
         // how will it be sync with another component ?
-        this.props.messageText = "Form is Complete";
+        //this.props.messageText = "Form is Complete";            //cant be updated here just like that, to expect in another component to reflect with updated value.
+        console.log(`before Props Variable messageText: ${this.props.messageText} `);
+        
+        if (this.state.isFormValid) {
+            console.log(`Form is valid`);
+
+            this.props.onValueChange("Form is Complete");                  //pass in a function that changes its value in parent component, so another component gets updated value.            
+        }
+        
+        //console.log(`after Props Variable messageText: ${this.props.messageText} `);        //here always Incomplete only, coz value not changed here
     }
 
 
     handleChange = e => {
-        e.preventDefault();
-        const { name, value } = e.target;    
+        e.preventDefault();     //?
+        const { name, value } = e.target;           //target is 'name' field 
         switch (name) {
           case 'name':
-            if(!nameRegex.test(value)) {
-                this.setState({isFormValid: false})
+            if(nameRegex.test(value)) {
+                this.setState({isNameValid: true})
             } 
             break;
           case 'email':
-            if(!emailRegex.test(value)) {
-                this.setState({isFormValid: false})
+            if(emailRegex.test(value)) {
+                this.setState({isEmailValid: true})
             } 
             break;
           case 'phone':
-            if(!phoneRegex.test(value)) {
-                this.setState({isFormValid: false})
+            if(phoneRegex.test(value)) {
+                this.setState({isPhoneValid: true})
             } 
             break;
           case 'blog-url':
-            if(!urlRegex.test(value)) {
-                this.setState({isFormValid: false})
+            if(urlRegex.test(value)) {
+                this.setState({isUrlValid: true})
             } 
             break;
         
@@ -111,7 +132,7 @@ class Form extends Component {
                 </h3>
                 <input
                     className=""
-                    placeholder="Name"
+                    placeholder="Email"
                     type="email" 
                     name="email"
                     noValidate
@@ -122,7 +143,7 @@ class Form extends Component {
                 </h3>
                 <input
                     className=""
-                    placeholder="Name"
+                    placeholder="Phone"
                     type="number" 
                     name="phone"
                     noValidate
@@ -133,7 +154,7 @@ class Form extends Component {
                 </h3>
                 <input
                     className=""
-                    placeholder="Name"
+                    placeholder="URL"
                     type="text" 
                     name="blog-url"
                     noValidate
