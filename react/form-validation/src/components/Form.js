@@ -18,12 +18,13 @@ class Form extends Component {
             //valid: null
             isFormValid: null
         };
+        //this.handleVerify = this.handleVerify.bind(this)
     }
 
     validate = () => {
         if (this.state.isEmailValid && this.state.isNameValid && this.state.isPhoneValid && this.state.isUrlValid) {
             console.log("oranges");
-            this.setState({isFormValid: true}, ()=>{console.log(`after correct validation isFormValid: ${this.state.isFormValid}`)});
+            this.setState({isFormValid: true}, ()=>{console.log(`after correct validation, in callback func, isFormValid: ${this.state.isFormValid}`)});
             
             console.log(`after correct validation isFormValid: ${this.state.isFormValid}`);
         }
@@ -47,25 +48,43 @@ class Form extends Component {
     //     setInterval(this.handleVerify, 1000);
     // }
 
-    handleVerify = e => {
+    handleVerify = (e) => {
         e.preventDefault();     //?
         const values = this.state
         console.log(values)
 
         //if(this.validate){
-        this.validate();
-        setTimeout(()=>{},500);       
+        
+        //this.validate();
+        //setTimeout(()=>{},500);   
+        if (this.state.isEmailValid && this.state.isNameValid && this.state.isPhoneValid && this.state.isUrlValid) {
+            console.log("oranges");
+            this.setState({isFormValid: true}, ()=>{
+                console.log(`after correct validation, in callback func, isFormValid: ${this.state.isFormValid}`)
+                
+                //props:
+                console.log(`before Props Variable messageText: ${this.props.messageText} `);        
+                if (this.state.isFormValid) {
+                    console.log(`Form is valid`);
+                    this.props.onValueChange("Form is Complete");                  //pass in a function that changes its value in parent component, so another component gets updated value.            
+                }
+            });
+            
+            console.log(`after correct validation isFormValid: ${this.state.isFormValid}`);            
+        } else {
+            this.setState({isFormValid: false}, ()=>{
+                //props:
+                console.log(`else block: before Props Variable messageText: ${this.props.messageText} `); 
+                console.log(`else block: Form is invalid`);
+                this.props.onValueChange("Form is InComplete");                  //pass in a function that changes its value in parent component, so another component gets updated value. \
+            });
+
+        }
 
         // --------- setting props value ???
         // how will it be sync with another component ?
         //this.props.messageText = "Form is Complete";            //cant be updated here just like that, to expect in another component to reflect with updated value.
-        console.log(`before Props Variable messageText: ${this.props.messageText} `);
         
-        if (this.state.isFormValid) {
-            console.log(`Form is valid`);
-
-            this.props.onValueChange("Form is Complete");                  //pass in a function that changes its value in parent component, so another component gets updated value.            
-        }
         
         //console.log(`after Props Variable messageText: ${this.props.messageText} `);        //here always Incomplete only, coz value not changed here
     }
@@ -78,22 +97,30 @@ class Form extends Component {
           case 'name':
             if(nameRegex.test(value)) {
                 this.setState({isNameValid: true})
-            } 
+            } else {
+                this.setState({isNameValid: false})
+            }
             break;
           case 'email':
             if(emailRegex.test(value)) {
                 this.setState({isEmailValid: true})
-            } 
+            } else {
+                this.setState({isEmailValid: false})
+            }
             break;
           case 'phone':
             if(phoneRegex.test(value)) {
                 this.setState({isPhoneValid: true})
-            } 
+            } else {
+                this.setState({isPhoneValid: false})
+            }
             break;
           case 'blog-url':
             if(urlRegex.test(value)) {
                 this.setState({isUrlValid: true})
-            } 
+            } else {
+                this.setState({isUrlValid: false})
+            }
             break;
         
           default:
